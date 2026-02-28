@@ -281,20 +281,47 @@ def parse_paper_sheet(filepath, sheet_name):
         else:
             status = "In Progress"
 
+        # Parse individual payments
+        p1 = safe_float(row.iloc[19])
+        p2 = safe_float(row.iloc[20])
+        p3 = safe_float(row.iloc[21])
+        p4 = safe_float(row.iloc[22])
+        p5 = safe_float(row.iloc[23])
+        sum_payments = p1 + p2 + p3 + p4 + p5
+
+        # Auto-calculate: if Total_Paid is 0 but individual payments exist, sum them
+        total_paid_raw = safe_float(row.iloc[24])
+        total_paid = total_paid_raw if total_paid_raw > 0 else sum_payments
+
+        # Auto-calculate: if Total_Amount is 0 but payments/balance exist, compute it
+        total_amount_raw = safe_float(row.iloc[18])
+        balance_raw = safe_float(row.iloc[25])
+        if total_amount_raw > 0:
+            total_amount = total_amount_raw
+        elif total_paid > 0 and balance_raw > 0:
+            total_amount = total_paid + balance_raw
+        elif total_paid > 0:
+            total_amount = total_paid
+        else:
+            total_amount = 0.0
+
+        # Balance: if raw is 0 but we can compute it, do so
+        balance = balance_raw if balance_raw > 0 else max(total_amount - total_paid, 0)
+
         papers.append({
             "SNo": sno_int,
             "Title": str(row.iloc[2]).strip() if pd.notna(row.iloc[2]) else "",
             "Authors": authors,
             "Author_Names": ", ".join([a["name"] for a in authors]),
             "Num_Authors": len(authors),
-            "Total_Amount": safe_float(row.iloc[18]),
-            "Payment_1": safe_float(row.iloc[19]),
-            "Payment_2": safe_float(row.iloc[20]),
-            "Payment_3": safe_float(row.iloc[21]),
-            "Payment_4": safe_float(row.iloc[22]),
-            "Payment_5": safe_float(row.iloc[23]),
-            "Total_Paid": safe_float(row.iloc[24]),
-            "Balance": safe_float(row.iloc[25]),
+            "Total_Amount": total_amount,
+            "Payment_1": p1,
+            "Payment_2": p2,
+            "Payment_3": p3,
+            "Payment_4": p4,
+            "Payment_5": p5,
+            "Total_Paid": total_paid,
+            "Balance": balance,
             "Status": status,
             "Status_Raw": status_raw,
             "Source": sheet_name.strip(),
