@@ -476,7 +476,7 @@ if not filtered.empty:
             showlegend=True,
             legend=dict(orientation="h", yanchor="top", y=-0.02, x=0.5, xanchor="center"),
         ))
-        st.plotly_chart(fig, width="stretch")
+        st.plotly_chart(fig, use_container_width=True)
 
     with r1b:
         status_order = ["Communicated to Riya", "Under Review", "Accepted", "Published"]
@@ -494,7 +494,7 @@ if not filtered.empty:
             connector=dict(line=dict(color="#E2E8F0", width=2)),
         )])
         fig.update_layout(**clean_layout(title="Publication Pipeline", height=400))
-        st.plotly_chart(fig, width="stretch")
+        st.plotly_chart(fig, use_container_width=True)
 
 # ============================================================
 # SECTION: Author Analysis
@@ -532,7 +532,7 @@ if not filtered.empty:
             xaxis=dict(dtick=1, gridcolor="#F1F5F9"),
             yaxis=dict(tickfont=dict(size=11, color=TEXT)),
         ))
-        st.plotly_chart(fig, width="stretch")
+        st.plotly_chart(fig, use_container_width=True)
 
     with a2:
         top_amt = df_auth[df_auth["amount"] > 0].sort_values("amount", ascending=True).tail(12)
@@ -549,7 +549,7 @@ if not filtered.empty:
                 title="Authors by Financial Contribution", height=420,
                 yaxis=dict(tickfont=dict(size=11, color=TEXT)),
             ))
-            st.plotly_chart(fig, width="stretch")
+            st.plotly_chart(fig, use_container_width=True)
         else:
             st.info("No financial data available.")
 
@@ -572,7 +572,7 @@ if not filtered.empty:
             title="Papers by Team Size", height=370,
             yaxis=dict(dtick=1, range=[0, ad["Papers"].max() * 1.3]),
         ))
-        st.plotly_chart(fig, width="stretch")
+        st.plotly_chart(fig, use_container_width=True)
 
     with b2:
         ss = filtered.groupby(["Source", "Status"]).size().reset_index(name="Count")
@@ -589,7 +589,7 @@ if not filtered.empty:
         fig.update_layout(**clean_layout(
             title="Status by Work Category", barmode="stack", height=370,
         ))
-        st.plotly_chart(fig, width="stretch")
+        st.plotly_chart(fig, use_container_width=True)
 
 # ============================================================
 # SECTION: Financial Dashboard
@@ -629,7 +629,7 @@ if not filtered.empty:
                 ))
                 fig.update_layout(height=220, margin=dict(l=20, r=20, t=50, b=10),
                                   paper_bgcolor="rgba(0,0,0,0)", font=CHART_FONT)
-                st.plotly_chart(fig, width="stretch")
+                st.plotly_chart(fig, use_container_width=True)
 
     f1, f2 = st.columns(2)
 
@@ -651,7 +651,7 @@ if not filtered.empty:
                 title="Paper-wise Payment Status", barmode="stack", height=420,
                 yaxis=dict(tickfont=dict(size=9, color=TEXT_MID)),
             ))
-            st.plotly_chart(fig, width="stretch")
+            st.plotly_chart(fig, use_container_width=True)
 
     with f2:
         stages = ["1st", "2nd", "3rd", "4th", "5th"]
@@ -668,7 +668,7 @@ if not filtered.empty:
             yaxis=dict(range=[0, max(vals)*1.3] if max(vals) > 0 else [0, 100]),
             xaxis=dict(title=dict(text="Payment Stage", font=dict(color=TEXT_MID, size=11))),
         ))
-        st.plotly_chart(fig, width="stretch")
+        st.plotly_chart(fig, use_container_width=True)
 
 # ============================================================
 # SECTION: Paper Details
@@ -780,7 +780,7 @@ if not filtered.empty:
     disp = filtered[["SNo","Title","Author_Names","Num_Authors",
                       "Total_Amount","Total_Paid","Balance","Status","Source"]].copy()
     disp.columns = ["#","Title","Authors","Team","Total (INR)","Paid (INR)","Balance (INR)","Status","Category"]
-    st.dataframe(disp.sort_values("#").reset_index(drop=True), width="stretch", height=400)
+    st.dataframe(disp.sort_values("#").reset_index(drop=True), use_container_width=True, height=400)
 
 # ============================================================
 # FOOTER
